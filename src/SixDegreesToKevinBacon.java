@@ -1,15 +1,34 @@
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Scanner;
 
 public class SixDegreesToKevinBacon {
     private final ArrayList<SimpleMovie> movies;
+    private final HashMap<String, ArrayList<SimpleMovie>> linkedActors;
     private final Scanner scanner;
 
     public SixDegreesToKevinBacon() {
         this.movies = MovieDatabaseBuilder.getMovieDB("src/movie_data");
         scanner = new Scanner(System.in);
+        linkedActors = linkActors();
     }
 
+    private HashMap<String, ArrayList<SimpleMovie>> linkActors() {
+        HashMap<String, ArrayList<SimpleMovie>> linkedActors = new HashMap<>();
+
+        for (SimpleMovie movie : movies) {
+            for (String actor : movie.cast().split(":")) {
+                if (linkedActors.containsKey(actor)) {
+                    linkedActors.get(actor).add(movie);
+                } else {
+                    linkedActors.put(actor, new ArrayList<>(List.of(movie)));
+                }
+            }
+        }
+
+        return linkedActors;
+    }
 
     private String getCastMember() {
         System.out.print("Enter an actor's name: ");
@@ -17,11 +36,9 @@ public class SixDegreesToKevinBacon {
 
         ArrayList<String> actors = new ArrayList<>();
 
-        for (SimpleMovie movie : movies) {
-            for (String actor : movie.cast().split(":")) {
-                if (actor.toLowerCase().contains(searchTerm) && !actors.contains(actor)) {
-                    actors.add(actor);
-                }
+        for (String actor : linkedActors.keySet()) {
+            if (actor.toLowerCase().contains(searchTerm) && !actors.contains(actor)) {
+                actors.add(actor);
             }
         }
 
@@ -57,7 +74,7 @@ public class SixDegreesToKevinBacon {
     private boolean runTheBaconater(String actor, int depth, int maxDepth) {
         if (depth == maxDepth) return false;
 
-        for (SimpleMovie movie : searchCast(actor)) {
+        for (SimpleMovie movie : linkedActors.get(actor)) {
             String cast = movie.cast();
 
             if (cast.contains("Kevin Bacon")) {
@@ -76,20 +93,5 @@ public class SixDegreesToKevinBacon {
         }
 
         return false;
-    }
-
-    private ArrayList<SimpleMovie> searchCast(String targetActor)  {
-        // arraylist to hold search results
-        ArrayList<SimpleMovie> results = new ArrayList<>();
-
-        // search through ALL movies in collection
-        for (SimpleMovie movie : movies) {
-            if (movie.cast().contains(targetActor)) {
-                //add the SimpleMovie object to the results list
-                results.add(movie);
-            }
-        }
-
-        return results;
     }
 }
