@@ -9,7 +9,7 @@ public class SixDegreesToKevinBacon {
     private final Scanner scanner;
 
     public SixDegreesToKevinBacon() {
-        this.movies = MovieDatabaseBuilder.getMovieDB("src/movie_data");
+        this.movies = MovieDatabaseBuilder.getMovieDB("movie_data");
         scanner = new Scanner(System.in);
         linkedActors = linkActors();
     }
@@ -87,7 +87,7 @@ public class SixDegreesToKevinBacon {
                 if (newActor.equals(actor)) continue;
                 if (!runTheBaconater(newActor, depth + 1, maxDepth)) continue;
 
-                System.out.printf("Who shared a role with %s in %s%s\n", actor, movie.title(), depth == 0 ? "!\n" : "...");
+                System.out.printf("And %s shared a role with %s in %s%s\n", newActor, actor, movie.title(), depth == 0 ? "!\n" : "...");
                 return true;
             }
         }
