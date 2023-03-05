@@ -18,7 +18,7 @@ public class SixDegreesToKevinBacon {
         HashMap<String, ArrayList<SimpleMovie>> linkedActors = new HashMap<>();
 
         for (SimpleMovie movie : movies) {
-            for (String actor : movie.cast().split(":")) {
+            for (String actor : movie.cast()) {
                 if (linkedActors.containsKey(actor)) {
                     linkedActors.get(actor).add(movie);
                 } else {
@@ -75,15 +75,14 @@ public class SixDegreesToKevinBacon {
         if (depth == maxDepth) return false;
 
         for (SimpleMovie movie : linkedActors.get(actor)) {
-            String cast = movie.cast();
 
-            if (cast.contains("Kevin Bacon")) {
+            if (movie.cast().contains("Kevin Bacon")) {
                 System.out.printf("\nAfter linking %s actors, Kevin Bacon was found!\n", depth + 1);
                 System.out.printf("In %s he shared a role with %s%s\n", movie.title(), actor, depth == 0 ? "!\n" : "...");
                 return true;
             }
 
-            for (String newActor : cast.split(":")) {
+            for (String newActor : movie.cast()) {
                 if (newActor.equals(actor)) continue;
                 if (!runTheBaconater(newActor, depth + 1, maxDepth)) continue;
 
